@@ -1,7 +1,9 @@
 
+import LeaderBoard from "./LeaderBoard";
+
 function App() {
   return (
-    <div>Hello</div>
+    <LeaderBoard />
   );
 }
 
