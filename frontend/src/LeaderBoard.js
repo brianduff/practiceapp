@@ -1,8 +1,7 @@
 import React from "react";
 import './LeaderBoard.css';
-import children from "./data";
 
-function LeaderBoard({ showPractice }) {
+function LeaderBoard({ showPractice, children }) {
   var childElements = []
   var pos = 1
   for (var child of children) {

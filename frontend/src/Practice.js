@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import children from "./data";
 
 const TIMER_STOPPED = 1
 const TIMER_PAUSED = 2
 const TIMER_RUNNING = 3
 
 
-function Practice() {
+function Practice({ children }) {
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TIMER_STOPPED)
   var [activeChild, setActiveChild] = useState(-1)
