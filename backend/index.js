@@ -5,33 +5,36 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.get("/api/test", async (req, res) => {
-  res.json({
-    "hello": "world"
-  })
+var children = [
+  {
+    "name": "Michael",
+    "total_seconds": 0,
+    "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg",
+    "loggedIn": true
+  },
+  {
+    "name": "Caitlin",
+    "total_seconds": 0,
+    "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg",
+    "loggedIn": true
+  },
+  {
+    "name": "Dan",
+    "total_seconds": 0,
+    "picture": "https://storage.googleapis.com/discobubble-quiz/country_detail_pokemon.png"
+
+  }
+]
+
+// from the frontend: { elapsed_seconds: 60 }
+
+app.post("/api/children/:childId/session", (req, res) => {
+  children[req.params.childId].total_seconds += req.body.elapsed_seconds
+  res.json(req.body)
 })
 
-app.get("/api/children", async (req, res) => {
-  res.json([
-    {
-      "name": "Michael",
-      "minutes": 200,
-      "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg",
-      "loggedIn": true
-    },
-    {
-      "name": "Caitlin",
-      "minutes": 175,
-      "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg",
-      "loggedIn": true
-    },
-    {
-      "name": "Dan",
-      "minutes": 168,
-      "picture": "https://storage.googleapis.com/discobubble-quiz/country_detail_pokemon.png"
-
-    }
-  ])
+app.get("/api/children", (req, res) => {
+  res.json(children)
 })
 
 const port = process.env.PORT || 4000

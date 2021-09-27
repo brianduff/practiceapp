@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 const TIMER_STOPPED = 1
@@ -19,6 +20,12 @@ function Practice({ children }) {
   }
 
   function stop() {
+    const session = {
+      "elapsed_seconds": seconds
+    }
+
+    axios.post(`http://localhost:4000/api/children/${activeChild}/session`, session)
+
     setSeconds(0)
     setTimerState(TIMER_STOPPED)
   }

@@ -11,11 +11,7 @@ function App() {
   const [children, setChildren] = useState([])
 
   useEffect(() => {
-    const fetch = async () => {
-      const result = await axios("http://localhost:4000/api/children")
-      return result.data
-    }
-    fetch().then(data => setChildren(data))
+    axios("http://localhost:4000/api/children").then(res => setChildren(res.data))
   }, [])
 
   const showPractice = () => {

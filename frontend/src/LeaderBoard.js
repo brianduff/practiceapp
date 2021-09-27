@@ -8,7 +8,7 @@ function LeaderBoard({ showPractice, children }) {
     childElements.push(<span>{pos}.</span>)
     childElements.push(<span><img width="50" src={child.picture} alt="blah"></img></span>)
     childElements.push(<span>{child.name}</span>)
-    childElements.push(<span>{child.minutes}</span>)
+    childElements.push(<span>{child.total_seconds}</span>)
     pos++
   }
 
