@@ -9,6 +9,7 @@ const TIMER_RUNNING = 3
 function Practice() {
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TIMER_STOPPED)
+  var [activeChild, setActiveChild] = useState(-1)
 
   function play() {
     setTimerState(TIMER_RUNNING)
@@ -35,22 +36,29 @@ function Practice() {
 
   var childElements = []
 
+  var index = 0
   for (var child of children) {
-    if (child.loggedIn) {
-      childElements.push(<span><img width="50" src={child.picture} alt="blah"></img></span>)
+    const childNumber = index;
+    if (child.loggedIn && (activeChild === -1 || index === activeChild)) {
+      childElements.push(<button onClick={() => setActiveChild(childNumber)}><img width="50" src={child.picture} alt="blah"></img></button>)
       childElements.push(<span>{child.name}</span>)
     }
+    index++
   }
 
   return (
     <div>
       <div>{childElements}</div>
-      <div>{seconds}</div>
-      <div>
-        {timerState === TIMER_STOPPED ? <button onClick={play}>Play</button> : <span />}
-        <button onClick={pauseOrResume}>{timerState === TIMER_PAUSED ? "Resume" : "Pause"}</button>
-        <button onClick={stop}>Stop</button>
-      </div>
+      {activeChild === -1 ? <span /> :
+        <>
+          <div>{seconds}</div>
+          <div>
+            {timerState === TIMER_STOPPED ? <button onClick={play}>Play</button> : <span />}
+            <button onClick={pauseOrResume}>{timerState === TIMER_PAUSED ? "Resume" : "Pause"}</button>
+            <button onClick={stop}>Stop</button>
+          </div>
+        </>
+      }
     </div>
   )
 }
