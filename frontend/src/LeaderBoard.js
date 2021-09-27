@@ -1,30 +1,8 @@
 import React from "react";
 import './LeaderBoard.css';
+import children from "./data";
 
-const children = [
-  {
-    "name": "Michael",
-    "minutes": 200,
-    "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg"
-  },
-  {
-    "name": "Caitlin",
-    "minutes": 175,
-    "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg"
-  },
-  {
-    "name": "Dan",
-    "minutes": 168,
-    "picture": "https://storage.googleapis.com/discobubble-quiz/country_detail_pokemon.png"
-
-  }
-]
-
-// https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg
-// https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg
-
-
-function LeaderBoard() {
+function LeaderBoard({ showPractice }) {
   var childElements = []
   var pos = 1
   for (var child of children) {
@@ -36,8 +14,13 @@ function LeaderBoard() {
   }
 
   return (
-    <div className="LeaderBoard">
-      {childElements}
+    <div>
+      <div className="LeaderBoard">
+        {childElements}
+      </div>
+      <div>
+        <button onClick={showPractice}>Practice</button>
+      </div>
     </div>
   );
 }
