@@ -10,19 +10,18 @@ var children = [
     "name": "Michael",
     "total_seconds": 0,
     "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg",
-    "loggedIn": true
+    "logged_in": true
   },
   {
     "name": "Caitlin",
     "total_seconds": 0,
     "picture": "https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg",
-    "loggedIn": true
+    "logged_in": true
   },
   {
     "name": "Dan",
     "total_seconds": 0,
     "picture": "https://storage.googleapis.com/discobubble-quiz/country_detail_pokemon.png"
-
   }
 ]
 
