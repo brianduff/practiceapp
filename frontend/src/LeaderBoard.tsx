@@ -1,5 +1,5 @@
 import './LeaderBoard.css';
-import { Child } from './Child';
+import { Child } from './types';
 
 interface Props {
   showPractice: () => void,

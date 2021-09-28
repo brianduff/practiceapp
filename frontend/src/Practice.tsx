@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Child } from './Child';
+import { Child, Session } from './types';
 
 enum TimerState {
   Stopped,
@@ -43,8 +43,8 @@ function Practice({ children }: Props) {
   }
 
   function stop() {
-    const session = {
-      "elapsed_seconds": seconds
+    const session: Session = {
+      elapsed_seconds: seconds
     }
 
     axios.post(`http://localhost:4000/api/children/${activeChild}/session`, session)
