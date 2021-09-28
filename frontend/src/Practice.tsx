@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
 import { Avatar, Size } from './Avatar';
 import "./Practice.css";
+import Time from './Time';
 
 enum TimerState {
   Stopped,
@@ -92,7 +93,7 @@ function Practice({ children }: Props) {
       <div className="StudentChooser">{childElements}</div>
       {activeChild !== -1 &&
         <>
-          <div>{seconds}</div>
+          <Time seconds={seconds} />
           <div>
             <button onClick={playPauseOrResume}>{getPlayButtonLabel(timerState)}</button>
             {timerState !== TimerState.Stopped && <button onClick={stop}>Stop</button>}

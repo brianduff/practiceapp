@@ -9,6 +9,7 @@ body {
   font-family: proxima-nova, sans-serif;
   background-color: var(--background-color);
   color: var(--foreground-color);
+  font-size: 13pt;
 }
 
 button {
@@ -24,4 +25,5 @@ button {
 button.stealthy {
   border: none;
   background: none;
+  padding: 0px;
 }

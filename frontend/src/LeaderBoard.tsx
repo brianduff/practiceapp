@@ -1,6 +1,7 @@
 import './LeaderBoard.css';
 import { Avatar } from './Avatar';
 import { Child } from './types';
+import Time from './Time';
 
 interface Props {
   showPractice: () => void,
@@ -14,7 +15,7 @@ export default function LeaderBoard({ showPractice, children }: Props) {
     childElements.push(<span>{pos}.</span>)
     childElements.push(<span><Avatar url={child.picture} /></span>)
     childElements.push(<span>{child.name}</span>)
-    childElements.push(<span>{child.total_seconds}</span>)
+    childElements.push(<Time seconds={child.total_seconds} />)
     pos++
   }
 
