@@ -8,5 +8,7 @@ export interface Child {
 }
 
 export type Session = {
-  elapsed_seconds: number
+  elapsed_seconds: number,
+  start_time: Date,
+  end_time: Date
 }

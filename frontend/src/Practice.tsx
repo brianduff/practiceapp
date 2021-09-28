@@ -29,10 +29,14 @@ function Practice({ children }: Props) {
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TimerState.Stopped)
   var [activeChild, setActiveChild] = useState(-1)
+  var [sessionStart, setSessionStart] = useState(new Date())
 
   function playPauseOrResume() {
     switch (timerState) {
       case TimerState.Stopped:
+        setSessionStart(new Date())
+        setTimerState(TimerState.Running);
+        break;
       case TimerState.Paused:
         setTimerState(TimerState.Running);
         break;
@@ -44,7 +48,9 @@ function Practice({ children }: Props) {
 
   function stop() {
     const session: Session = {
-      elapsed_seconds: seconds
+      elapsed_seconds: seconds,
+      start_time: sessionStart,
+      end_time: new Date()
     }
 
     axios.post(`http://localhost:4000/api/children/${activeChild}/session`, session)

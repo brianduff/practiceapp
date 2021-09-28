@@ -36,7 +36,7 @@ app.post("/api/children/:childId/session", (req: Request<QueryParams, {}, Sessio
   res.json(req.body)
 })
 
-app.get("/api/children", (req: Request, res: Response) => {
+app.get("/api/children", (_: Request, res: Response) => {
   // Sort the children by their practice time, descending.
   children.sort((a, b) => b.total_seconds - a.total_seconds)
 
