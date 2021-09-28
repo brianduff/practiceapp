@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
 import { Avatar, Size } from './Avatar';
-import { chdir } from 'process';
+import "./Practice.css";
 
 enum TimerState {
   Stopped,
@@ -88,8 +88,9 @@ function Practice({ children }: Props) {
 
   return (
     <div>
-      <div>{childElements}</div>
-      {activeChild === -1 ? <span /> :
+      {activeChild === -1 && <h1>Choose a Student</h1>}
+      <div className="StudentChooser">{childElements}</div>
+      {activeChild !== -1 &&
         <>
           <div>{seconds}</div>
           <div>

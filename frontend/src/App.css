@@ -18,6 +18,7 @@ button {
   font-size: inherit;
   color: inherit;
   cursor: pointer;
+  padding: 2px 15px;
 }
 
 button.stealthy {
