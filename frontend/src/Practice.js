@@ -6,17 +6,33 @@ const TIMER_PAUSED = 2
 const TIMER_RUNNING = 3
 
 
+function getPlayButtonLabel(state) {
+  switch (state) {
+    case TIMER_PAUSED:
+      return "Resume";
+    case TIMER_RUNNING:
+      return "Pause";
+    case TIMER_STOPPED:
+    default:
+      return "Start";
+  }
+}
+
 function Practice({ children }) {
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TIMER_STOPPED)
   var [activeChild, setActiveChild] = useState(-1)
 
-  function play() {
-    setTimerState(TIMER_RUNNING)
-  }
-
-  function pauseOrResume() {
-    setTimerState(timerState === TIMER_PAUSED ? TIMER_RUNNING : TIMER_PAUSED)
+  function playPauseOrResume() {
+    switch (timerState) {
+      case TIMER_STOPPED:
+      case TIMER_PAUSED:
+        setTimerState(TIMER_RUNNING);
+        break;
+      case TIMER_RUNNING:
+      default:
+        setTimerState(TIMER_PAUSED);
+    }
   }
 
   function stop() {
@@ -59,9 +75,8 @@ function Practice({ children }) {
         <>
           <div>{seconds}</div>
           <div>
-            {timerState === TIMER_STOPPED ? <button onClick={play}>Play</button> : <span />}
-            <button onClick={pauseOrResume}>{timerState === TIMER_PAUSED ? "Resume" : "Pause"}</button>
-            <button onClick={stop}>Stop</button>
+            <button onClick={playPauseOrResume}>{getPlayButtonLabel(timerState)}</button>
+            {timerState !== TIMER_STOPPED && <button onClick={stop}>Stop</button>}
           </div>
         </>
       }
