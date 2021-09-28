@@ -3,3 +3,15 @@
   width: 50px;
   border: 2px solid;
 }
+
+.Small {
+  width: 10px;
+}
+
+.Medium {
+  width: 50px;
+}
+
+.Large {
+  width: 100px;
+}

@@ -1,6 +1,8 @@
 :root {
   --background-color: #656176;
   --foreground-color: #f8f1ff;
+  --highlight-color: #decdf5;
+  --bold-color: #1b998b;
 }
 
 body {
@@ -10,5 +12,15 @@ body {
 }
 
 button {
+  border: 2px solid var(--highlight-color);
+  background-color: var(--bold-color);
   font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.stealthy {
+  border: none;
+  background: none;
 }

@@ -1,5 +1,5 @@
 import './LeaderBoard.css';
-import Avatar from './Avatar';
+import { Avatar } from './Avatar';
 import { Child } from './types';
 
 interface Props {
@@ -20,11 +20,12 @@ export default function LeaderBoard({ showPractice, children }: Props) {
 
   return (
     <div>
+      <h1>Practice Leaderboard</h1>
       <div className="LeaderBoard">
         {childElements}
       </div>
       <div>
-        <button onClick={showPractice}>Practice</button>
+        <button onClick={showPractice}>Start Practice</button>
       </div>
     </div>
   );

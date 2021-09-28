@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
+import { Avatar, Size } from './Avatar';
+import { chdir } from 'process';
 
 enum TimerState {
   Stopped,
@@ -75,7 +77,10 @@ function Practice({ children }: Props) {
   for (var child of children) {
     const childNumber = index;
     if (child.logged_in && (activeChild === -1 || index === activeChild)) {
-      childElements.push(<button onClick={() => setActiveChild(childNumber)}><img width="50" src={child.picture} alt="blah"></img></button>)
+      childElements.push(
+        <button className="stealthy" onClick={() => setActiveChild(childNumber)}>
+          <Avatar url={child.picture} size={index === activeChild ? Size.Large : Size.Medium } />
+        </button>)
       childElements.push(<span>{child.name}</span>)
     }
     index++

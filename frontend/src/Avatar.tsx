@@ -1,11 +1,22 @@
 import './Avatar.css'
 
-type Props = {
-  url: string
+export enum Size {
+  Small,
+  Medium,
+  Large
 }
 
-export default function Avatar({ url }: Props) {
+type Props = {
+  url: string,
+  size?: Size
+}
+
+export function Avatar({ url, size }: Props) {
+  if (!size) {
+    size = Size.Medium;
+  }
+
   return (
-    <img src={url} alt="Avatar" className="Avatar" />
+    <img src={url} alt="Avatar" className={`Avatar ${Size[size]}`} />
   )
 }
