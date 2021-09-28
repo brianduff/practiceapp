@@ -34,6 +34,9 @@ app.post("/api/children/:childId/session", (req, res) => {
 })
 
 app.get("/api/children", (req, res) => {
+  // Sort the children by their practice time, descending.
+  children.sort((a, b) => b.total_seconds - a.total_seconds)
+
   res.json(children)
 })
 
