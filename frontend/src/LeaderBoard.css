@@ -1,4 +1,7 @@
 .LeaderBoard {
   display: grid;
-  grid-template-columns: 10px 50px 100px 50px;
+  grid-template-columns: max-content max-content fit-content(100px) 50px;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 5px;
 }

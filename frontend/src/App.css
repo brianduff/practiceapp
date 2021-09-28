@@ -1,0 +1,14 @@
+:root {
+  --background-color: #656176;
+  --foreground-color: #f8f1ff;
+}
+
+body {
+  font-family: proxima-nova, sans-serif;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+button {
+  font-family: inherit;
+}

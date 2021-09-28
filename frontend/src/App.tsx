@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import LeaderBoard from "./LeaderBoard";
 import Practice from './Practice';
 import axios from 'axios';
+import './App.css';
 
 const LEADERBOARD_PAGE = 1
 const PRACTICE_PAGE = 2
