@@ -5,3 +5,8 @@
   column-gap: 10px;
   row-gap: 5px;
 }
+
+.StudentChooserSelected {
+  display: block;
+  text-align: center;
+}
