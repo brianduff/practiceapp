@@ -2,6 +2,7 @@ import './LeaderBoard.css';
 import { Avatar } from './Avatar';
 import { Child } from './types';
 import { Time } from './Time';
+import { button, ButtonBar } from './ButtonBar';
 
 interface Props {
   showPractice: () => void,
@@ -25,9 +26,7 @@ export default function LeaderBoard({ showPractice, children }: Props) {
       <div className="LeaderBoard">
         {childElements}
       </div>
-      <div>
-        <button onClick={showPractice}>Start Practice</button>
-      </div>
+      <ButtonBar buttons={[button("Start Practice", showPractice)]} />
     </div>
   );
 }

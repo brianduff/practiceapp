@@ -5,6 +5,7 @@ import { Avatar } from './Avatar';
 import "./Practice.css";
 import { Time } from './Time';
 import { Size } from './size'
+import { ButtonBar, Button, button } from './ButtonBar';
 
 enum TimerState {
   Stopped,
@@ -81,12 +82,17 @@ function Practice({ children }: Props) {
     if (child.logged_in && (activeChild === -1 || index === activeChild)) {
       childElements.push(
         <button className="stealthy" onClick={() => setActiveChild(childNumber)}>
-          <Avatar url={child.picture} size={index === activeChild ? Size.Large : Size.Medium } />
+          <Avatar url={child.picture} size={index === activeChild ? Size.Large : Size.Medium} />
         </button>)
       childElements.push(<span>{child.name}</span>)
     }
     index++
   }
+
+  const buttons: Button[] = [
+    button(getPlayButtonLabel(timerState), playPauseOrResume)
+  ]
+  if (timerState !== TimerState.Stopped) buttons.push(button("Stop", stop))
 
   return (
     <div>
@@ -95,10 +101,7 @@ function Practice({ children }: Props) {
       {activeChild !== -1 &&
         <>
           <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />
-          <div>
-            <button onClick={playPauseOrResume}>{getPlayButtonLabel(timerState)}</button>
-            {timerState !== TimerState.Stopped && <button onClick={stop}>Stop</button>}
-          </div>
+          <ButtonBar buttons={buttons} />
         </>
       }
     </div>
