@@ -19,7 +19,7 @@ export function Time({ seconds, paused, size }: Props) {
 
   var classes = []
   if (paused) classes.push("Paused")
-  if (size === Size.Large) classes.push("Large")
+  if (size === Size.Large) classes.push("LargeTime")
 
   return (
     <div className={classes.join(" ")}>{minutes}:{displayedSeconds}</div>

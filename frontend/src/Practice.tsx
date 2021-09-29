@@ -80,13 +80,15 @@ function Practice({ children }: Props) {
   if (timerState !== TimerState.Stopped) buttons.push(button("Stop", stop))
 
   return (
-    <div>
+    <div className="PracticeContainer">
       <StudentChooser students={children}
         selectedIndex={activeChild === -1 ? undefined : activeChild}
         onSelected={index => setActiveChild(index)} />
       {activeChild !== -1 &&
         <>
-          <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />
+          <div className="TimeBox">
+            <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />
+          </div>
           <ButtonBar buttons={buttons} />
         </>
       }
