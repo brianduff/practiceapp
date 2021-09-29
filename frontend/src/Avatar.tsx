@@ -1,10 +1,5 @@
 import './Avatar.css'
-
-export enum Size {
-  Small,
-  Medium,
-  Large
-}
+import { Size } from './size'
 
 type Props = {
   url: string,

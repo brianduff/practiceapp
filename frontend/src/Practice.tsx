@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
-import { Avatar, Size } from './Avatar';
+import { Avatar } from './Avatar';
 import "./Practice.css";
-import Time from './Time';
+import { Time } from './Time';
+import { Size } from './size'
 
 enum TimerState {
   Stopped,
@@ -93,7 +94,7 @@ function Practice({ children }: Props) {
       <div className="StudentChooser">{childElements}</div>
       {activeChild !== -1 &&
         <>
-          <Time seconds={seconds} />
+          <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />
           <div>
             <button onClick={playPauseOrResume}>{getPlayButtonLabel(timerState)}</button>
             {timerState !== TimerState.Stopped && <button onClick={stop}>Stop</button>}

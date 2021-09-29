@@ -27,3 +27,8 @@ button.stealthy {
   background: none;
   padding: 0px;
 }
+
+.container {
+  display: flex;
+  justify-content: center;
+}

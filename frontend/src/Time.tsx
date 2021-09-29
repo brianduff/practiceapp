@@ -1,8 +1,13 @@
+import './Time.css';
+import { Size } from './size';
+
 type Props = {
-  seconds: number
+  seconds: number,
+  paused?: boolean,
+  size?: Size,
 }
 
-export default function Time({ seconds }: Props) {
+export function Time({ seconds, paused, size }: Props) {
   const minutes = Math.floor(seconds / 60);
   const secondsInMinute = seconds % 60;
 
@@ -12,7 +17,11 @@ export default function Time({ seconds }: Props) {
     displayedSeconds = "0" + displayedSeconds;
   }
 
+  var classes = []
+  if (paused) classes.push("Paused")
+  if (size === Size.Large) classes.push("Large")
+
   return (
-    <div>{minutes}:{displayedSeconds}</div>
+    <div className={classes.join(" ")}>{minutes}:{displayedSeconds}</div>
   );
 }

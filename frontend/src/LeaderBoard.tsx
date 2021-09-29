@@ -1,7 +1,7 @@
 import './LeaderBoard.css';
 import { Avatar } from './Avatar';
 import { Child } from './types';
-import Time from './Time';
+import { Time } from './Time';
 
 interface Props {
   showPractice: () => void,

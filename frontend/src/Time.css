@@ -1,0 +1,13 @@
+.Paused {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.Large {
+  font-size: 32pt;
+}

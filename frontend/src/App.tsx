@@ -19,11 +19,14 @@ function App() {
     setPage(PRACTICE_PAGE)
   }
 
+  var pageElement;
   if (page === PRACTICE_PAGE) {
-    return <Practice children={children} />
+    pageElement = <Practice children={children} />
   } else {
-    return <LeaderBoard children={children} showPractice={showPractice} />
+    pageElement = <LeaderBoard children={children} showPractice={showPractice} />
   }
+
+  return <div className="container">{pageElement}</div>
 }
 
 export default App;
