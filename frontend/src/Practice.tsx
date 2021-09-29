@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
-import { Avatar } from './Avatar';
 import "./Practice.css";
 import { Time } from './Time';
 import { Size } from './size'
 import { ButtonBar, Button, button } from './ButtonBar';
+import { StudentChooser } from './StudentChooser';
 
 enum TimerState {
   Stopped,
@@ -74,21 +74,6 @@ function Practice({ children }: Props) {
     }
   }, [timerState, seconds])
 
-  var childElements = []
-
-  var index = 0
-  for (var child of children) {
-    const childNumber = index;
-    if (child.logged_in && (activeChild === -1 || index === activeChild)) {
-      childElements.push(
-        <button className="stealthy" onClick={() => setActiveChild(childNumber)}>
-          <Avatar url={child.picture} size={index === activeChild ? Size.Large : Size.Medium} />
-        </button>)
-      childElements.push(<span>{child.name}</span>)
-    }
-    index++
-  }
-
   const buttons: Button[] = [
     button(getPlayButtonLabel(timerState), playPauseOrResume)
   ]
@@ -96,8 +81,9 @@ function Practice({ children }: Props) {
 
   return (
     <div>
-      {activeChild === -1 && <h1>Choose a Student</h1>}
-      <div className="StudentChooser">{childElements}</div>
+      <StudentChooser students={children}
+        selectedIndex={activeChild === -1 ? undefined : activeChild}
+        onSelected={index => setActiveChild(index)} />
       {activeChild !== -1 &&
         <>
           <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />

@@ -1,0 +1,7 @@
+.StudentChooser {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 5px;
+}
