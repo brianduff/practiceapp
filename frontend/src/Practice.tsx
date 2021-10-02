@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Child, Session } from './types';
 import "./Practice.css";
 import { Time } from './Time';
@@ -31,10 +31,12 @@ interface Props {
 }
 
 function Practice({ children }: Props) {
+  var [students, setStudents] = useState(children)
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TimerState.Stopped)
   var [activeChild, setActiveChild] = useState(-1)
   var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
+  var [secondsUntilDailyGoal, setSecondsUntilDailyGoal] = useState<number | undefined>(undefined)
   var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
 
   function playPauseOrResume() {
@@ -60,6 +62,10 @@ function Practice({ children }: Props) {
       const session = activeSession as Session;
       axios.delete(`http://localhost:4000/api/children/${activeChild}/session/${session.id}`)
       setActiveSession(undefined)
+      // Reload the children from the server to get updated session stats data
+      axios("http://localhost:4000/api/children").then(res => setStudents(res.data))
+
+      console.log("Children:", { activeChild, students })
     }
 
     setSeconds(0)
@@ -78,26 +84,36 @@ function Practice({ children }: Props) {
           axios.put(`http://localhost:4000/api/children/${activeChild}/session/${activeSession.id}`, activeSession)
         }
 
-        const child = children[activeChild]
+        const child = students[activeChild]
 
         console.log("Child: ", { child, newSeconds })
 
         if (child.goals) {
           const todaySeconds = child.session_stats.seconds_today + newSeconds
+          console.log("Erm:", { todaySeconds, "goal": child.goals.daily_seconds })
           if (todaySeconds >= child.goals.daily_seconds) {
             setReachedDailyGoal(true)
+          } else {
+            setSecondsUntilDailyGoal(child.goals.daily_seconds - todaySeconds)
           }
         }
       }, 1000)
 
       return () => clearInterval(interval)  // Let react clean up the timer
     }
-  }, [timerState, seconds, activeChild, children, activeSession])
+  }, [timerState, seconds, activeChild, children, activeSession, students])
 
   const buttons: Button[] = [
     button(getPlayButtonLabel(timerState), playPauseOrResume)
   ]
   if (timerState !== TimerState.Stopped) buttons.push(button("Stop", stop))
+
+  var secondsUntilGoalElement = <div></div>
+  if (reachedDailyGoal) {
+    secondsUntilGoalElement = <div className="TimeToTarget">Daily target reached!</div>
+  } else if (secondsUntilDailyGoal) {
+    secondsUntilGoalElement = <div className="TimeToTarget"><Time seconds={secondsUntilDailyGoal} /> until target</div>
+  }
 
   return (
     <div className="PracticeContainer">
@@ -110,6 +126,7 @@ function Practice({ children }: Props) {
             <Time size={Size.Large} paused={timerState === TimerState.Paused}
               seconds={seconds} color={reachedDailyGoal ? Color.Green : Color.Default} />
           </div>
+          {secondsUntilGoalElement}
           <ButtonBar buttons={buttons} />
         </>
       }

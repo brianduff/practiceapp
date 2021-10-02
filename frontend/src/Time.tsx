@@ -24,6 +24,6 @@ export function Time({ seconds, paused, size, color }: Props) {
   if (color === Color.Green) classes.push("GreenTime")
 
   return (
-    <div className={classes.join(" ")}>{minutes}:{displayedSeconds}</div>
+    <span className={classes.join(" ")}>{minutes}:{displayedSeconds}</span>
   );
 }

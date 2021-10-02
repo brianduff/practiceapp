@@ -50,11 +50,7 @@ app.delete("/api/children/:childId/session/:sessionId", (req: Request<SessionPar
 })
 
 app.get("/api/children", (_: Request, res: Response) => {
-  // Sort the children by their practice time, descending.
-  var students = getAllStudents()
-  students.sort((a, b) => b.session_stats.seconds_week - a.session_stats.seconds_week)
-
-  res.json(students)
+  res.json(getAllStudents())
 })
 
 const port = process.env.PORT || 4000
