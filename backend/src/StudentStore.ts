@@ -9,6 +9,11 @@ export interface StudentStore {
    * Gets all students.
    */
   getAll(): Promise<Child[]>;
+
+  /**
+   * Adds a student to the store.
+   */
+  add(student: Child): Promise<Child>;
 }
 
 export class ArrayStudentStore implements StudentStore {
@@ -51,11 +56,20 @@ export class ArrayStudentStore implements StudentStore {
   getAll(): Promise<Child[]> {
     return Promise.resolve(this.students)
   }
+
+  add(student: Child): Promise<Child> {
+    this.students.push(student)
+    return Promise.resolve(student)
+  }
 }
 
 export class MongoStudentStore implements StudentStore {
   async getAll(): Promise<Child[]> {
     return await Db.students().find().toArray()
   }
-}
 
+  async add(student: Child): Promise<Child> {
+    await Db.students().insertOne(student)
+    return Promise.resolve(student)
+  }
+}

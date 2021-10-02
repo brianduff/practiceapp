@@ -3,13 +3,15 @@ import { Avatar } from './Avatar';
 import { Child } from './types';
 import { Time } from './Time';
 import { button, ButtonBar } from './ButtonBar';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
-  showPractice: () => void,
   children: Child[]
 }
 
-export default function LeaderBoard({ showPractice, children }: Props) {
+export default function LeaderBoard({ children }: Props) {
+  const history = useHistory()
+
   var childElements = []
   var pos = 1
   var sortedChildren = [...children]
@@ -21,6 +23,8 @@ export default function LeaderBoard({ showPractice, children }: Props) {
     childElements.push(<Time seconds={child.session_stats.seconds_week} />)
     pos++
   }
+
+  const showPractice = () => history.push("/practice")
 
   return (
     <div>

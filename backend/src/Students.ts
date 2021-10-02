@@ -53,6 +53,14 @@ function getPeriodStats(childId: number): PeriodStats {
   return stats
 }
 
+export async function addStudent(child: Child): Promise<Child> {
+  return await studentStore.add(child)
+}
+
+/**
+ * Fetches all students from the store, updating their session stats.
+ * @returns
+ */
 export async function getAllStudents(): Promise<Child[]> {
   const students = await studentStore.getAll()
 

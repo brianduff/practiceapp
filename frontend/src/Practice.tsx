@@ -7,6 +7,7 @@ import { Color, Size } from './enums'
 import { ButtonBar, Button, button } from './ButtonBar';
 import { StudentChooser } from './StudentChooser';
 import useSound from 'use-sound';
+import { useHistory } from 'react-router-dom';
 
 
 enum TimerState {
@@ -40,9 +41,10 @@ function Practice({ children }: Props) {
   var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
   var [secondsUntilDailyGoal, setSecondsUntilDailyGoal] = useState<number | undefined>(undefined)
   var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
-  var [playedFanfare, setPlayedFanfare] = useState(false)
 
   const [playFanfare] = useSound('/fanfare.flac', { soundEnabled: !reachedDailyGoal })
+
+  const history = useHistory()
 
   function playPauseOrResume() {
     switch (timerState) {
@@ -69,8 +71,6 @@ function Practice({ children }: Props) {
       setActiveSession(undefined)
       // Reload the children from the server to get updated session stats data
       axios("http://localhost:4000/api/children").then(res => setStudents(res.data))
-
-      console.log("Children:", { activeChild, students })
     }
 
     setSeconds(0)
@@ -113,7 +113,7 @@ function Practice({ children }: Props) {
     button(getPlayButtonLabel(timerState), playPauseOrResume)
   ]
   if (timerState !== TimerState.Stopped) buttons.push(button("Stop", stop))
-  if (timerState === TimerState.Stopped) buttons.push(button("Leaderboard", () => window.location.reload()))
+  if (timerState === TimerState.Stopped) buttons.push(button("Leaderboard", () => history.push("/")))
 
   var secondsUntilGoalElement = <div></div>
   if (reachedDailyGoal) {

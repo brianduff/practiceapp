@@ -2,7 +2,7 @@ import cors from 'cors';
 import { Child, Session } from './types';
 import express from 'express';
 import { Request, Response } from 'express';
-import { getAllStudents, startSession, getActiveSession, endActiveSession } from './Students';
+import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession } from './Students';
 import * as sourceMapSupport from 'source-map-support';
 import { Db } from './db';
 
@@ -54,6 +54,10 @@ app.delete("/api/children/:childId/session/:sessionId", (req: Request<SessionPar
 
 app.get("/api/children", async (_: Request, res: Response<Child[], {}>) => {
   res.json(await getAllStudents())
+})
+
+app.post("/api/children", async (req: Request<{}, {}, Child, {}>, res: Response<Child, {}>) => {
+  res.json(await addStudent(req.body))
 })
 
 const port = process.env.PORT || 4000
