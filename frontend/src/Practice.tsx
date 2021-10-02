@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
 import "./Practice.css";
 import { Time } from './Time';
@@ -86,11 +86,9 @@ function Practice({ children }: Props) {
 
         const child = students[activeChild]
 
-        console.log("Child: ", { child, newSeconds })
 
         if (child.goals) {
           const todaySeconds = child.session_stats.seconds_today + newSeconds
-          console.log("Erm:", { todaySeconds, "goal": child.goals.daily_seconds })
           if (todaySeconds >= child.goals.daily_seconds) {
             setReachedDailyGoal(true)
           } else {
@@ -107,6 +105,7 @@ function Practice({ children }: Props) {
     button(getPlayButtonLabel(timerState), playPauseOrResume)
   ]
   if (timerState !== TimerState.Stopped) buttons.push(button("Stop", stop))
+  if (timerState === TimerState.Stopped) buttons.push(button("Leaderboard", () => window.location.reload()))
 
   var secondsUntilGoalElement = <div></div>
   if (reachedDailyGoal) {
