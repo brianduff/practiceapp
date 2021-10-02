@@ -1,6 +1,10 @@
 import { Child, Session } from './types';
 import { format } from 'date-fns';
 import { v4 as create_uuid } from 'uuid';
+import { Db } from './db';
+import { StudentStore, ArrayStudentStore } from './StudentStore';
+
+const studentStore = new ArrayStudentStore()
 
 interface PeriodStats {
   // Map from yyyyMMdd -> number of seconds practiced on that day
@@ -37,41 +41,6 @@ var activeSessions: Session[] = [
   null
 ]
 
-var students: Child[] = [
-  {
-    name: "Michael",
-    picture: "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg",
-    logged_in: true,
-    goals: {
-      daily_seconds: 30
-    },
-    session_stats: {
-      seconds_today: 0,
-      seconds_week: 0
-    }
-  },
-  {
-    name: "Caitlin",
-    picture: "https://storage.googleapis.com/discobubble-quiz/IMG_3196.jpg",
-    logged_in: true,
-    goals: {
-      daily_seconds: 1800
-    },
-    session_stats: {
-      seconds_today: 0,
-      seconds_week: 0
-    }
-  },
-  {
-    name: "Dan",
-    picture: "https://storage.googleapis.com/discobubble-quiz/country_detail_pokemon.png",
-    session_stats: {
-      seconds_today: 0,
-      seconds_week: 0
-    }
-  }
-]
-
 function getPeriodStats(childId: number): PeriodStats {
   let stats = periodStats[childId]
   if (!stats) {
@@ -84,14 +53,14 @@ function getPeriodStats(childId: number): PeriodStats {
   return stats
 }
 
-export function getAllStudents(): Child[] {
+export async function getAllStudents(): Promise<Child[]> {
+  const students = await studentStore.getAll()
+
   // Roll up the weekly and daily seconds for each child into the returned object.
   for (var i = 0; i < students.length; i++) {
-    const stats = getPeriodStats(i);
+    const stats = getPeriodStats(i)
     const dayKey = getDayKey()
     const weekKey = getWeekKey()
-
-    console.log("Keys:", { dayKey, weekKey, stats })
 
     let secondsToday = stats.daily_seconds.get(dayKey) || 0
     let secondsWeek = stats.weekly_seconds.get(weekKey) || 0

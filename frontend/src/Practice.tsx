@@ -6,7 +6,6 @@ import { Time } from './Time';
 import { Color, Size } from './enums'
 import { ButtonBar, Button, button } from './ButtonBar';
 import { StudentChooser } from './StudentChooser';
-//import './fanfare.flac';
 import useSound from 'use-sound';
 
 
@@ -98,7 +97,6 @@ function Practice({ children }: Props) {
           if (todaySeconds >= child.goals.daily_seconds) {
             if (todaySeconds === child.goals.daily_seconds) {
               playFanfare()
-              console.log("Reached Daily Goal")
             }
             setReachedDailyGoal(true)
           } else {

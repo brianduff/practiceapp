@@ -1,9 +1,12 @@
 import cors from 'cors';
-import { Session } from './types';
+import { Child, Session } from './types';
 import express from 'express';
 import { Request, Response } from 'express';
 import { getAllStudents, startSession, getActiveSession, endActiveSession } from './Students';
 import * as sourceMapSupport from 'source-map-support';
+import { Db } from './db';
+
+Db.init()
 
 sourceMapSupport.install()
 
@@ -49,8 +52,8 @@ app.delete("/api/children/:childId/session/:sessionId", (req: Request<SessionPar
   res.json(endActiveSession(req.params.childId))
 })
 
-app.get("/api/children", (_: Request, res: Response) => {
-  res.json(getAllStudents())
+app.get("/api/children", async (_: Request, res: Response<Child[], {}>) => {
+  res.json(await getAllStudents())
 })
 
 const port = process.env.PORT || 4000
