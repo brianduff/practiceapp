@@ -1,6 +1,6 @@
 import { Child } from './types'
 import { Avatar } from './Avatar'
-import { Size } from './size'
+import { Size } from './enums'
 import './StudentChooser.css'
 
 type Props = {

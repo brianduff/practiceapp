@@ -16,7 +16,7 @@ export default function LeaderBoard({ showPractice, children }: Props) {
     childElements.push(<span>{pos}.</span>)
     childElements.push(<span><Avatar url={child.picture} /></span>)
     childElements.push(<span>{child.name}</span>)
-    childElements.push(<Time seconds={child.total_seconds} />)
+    childElements.push(<Time seconds={child.session_stats.seconds_week} />)
     pos++
   }
 

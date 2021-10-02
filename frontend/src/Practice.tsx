@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Child, Session } from './types';
 import "./Practice.css";
 import { Time } from './Time';
-import { Size } from './size'
+import { Color, Size } from './enums'
 import { ButtonBar, Button, button } from './ButtonBar';
 import { StudentChooser } from './StudentChooser';
 
@@ -34,13 +34,17 @@ function Practice({ children }: Props) {
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TimerState.Stopped)
   var [activeChild, setActiveChild] = useState(-1)
-  var [sessionStart, setSessionStart] = useState(new Date())
+  var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
+  var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
 
   function playPauseOrResume() {
     switch (timerState) {
       case TimerState.Stopped:
-        setSessionStart(new Date())
-        setTimerState(TimerState.Running);
+        axios.post<Session>(`http://localhost:4000/api/children/${activeChild}/session`).then(response => {
+          var session = response.data
+          setActiveSession(session);
+          setTimerState(TimerState.Running);
+        })
         break;
       case TimerState.Paused:
         setTimerState(TimerState.Running);
@@ -52,13 +56,11 @@ function Practice({ children }: Props) {
   }
 
   function stop() {
-    const session: Session = {
-      elapsed_seconds: seconds,
-      start_time: sessionStart,
-      end_time: new Date()
+    if (activeSession) {
+      const session = activeSession as Session;
+      axios.delete(`http://localhost:4000/api/children/${activeChild}/session/${session.id}`)
+      setActiveSession(undefined)
     }
-
-    axios.post(`http://localhost:4000/api/children/${activeChild}/session`, session)
 
     setSeconds(0)
     setTimerState(TimerState.Stopped)
@@ -67,12 +69,30 @@ function Practice({ children }: Props) {
   useEffect(() => {
     if (timerState === TimerState.Running) {
       let interval = setInterval(() => {
-        setSeconds(seconds + 1)
+        const newSeconds = seconds + 1
+        setSeconds(newSeconds)
+
+        // Save the session to the server every 5 seconds.
+        if (newSeconds % 5 === 0 && activeSession) {
+          activeSession.elapsed_seconds = newSeconds
+          axios.put(`http://localhost:4000/api/children/${activeChild}/session/${activeSession.id}`, activeSession)
+        }
+
+        const child = children[activeChild]
+
+        console.log("Child: ", { child, newSeconds })
+
+        if (child.goals) {
+          const todaySeconds = child.session_stats.seconds_today + newSeconds
+          if (todaySeconds >= child.goals.daily_seconds) {
+            setReachedDailyGoal(true)
+          }
+        }
       }, 1000)
 
       return () => clearInterval(interval)  // Let react clean up the timer
     }
-  }, [timerState, seconds])
+  }, [timerState, seconds, activeChild, children, activeSession])
 
   const buttons: Button[] = [
     button(getPlayButtonLabel(timerState), playPauseOrResume)
@@ -87,7 +107,8 @@ function Practice({ children }: Props) {
       {activeChild !== -1 &&
         <>
           <div className="TimeBox">
-            <Time size={Size.Large} paused={timerState === TimerState.Paused} seconds={seconds} />
+            <Time size={Size.Large} paused={timerState === TimerState.Paused}
+              seconds={seconds} color={reachedDailyGoal ? Color.Green : Color.Default} />
           </div>
           <ButtonBar buttons={buttons} />
         </>

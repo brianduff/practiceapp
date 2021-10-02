@@ -1,5 +1,5 @@
 import './Avatar.css'
-import { Size } from './size'
+import { Size } from './enums'
 
 type Props = {
   url: string,

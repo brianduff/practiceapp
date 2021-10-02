@@ -1,13 +1,14 @@
 import './Time.css';
-import { Size } from './size';
+import { Size, Color } from './enums';
 
 type Props = {
   seconds: number,
   paused?: boolean,
   size?: Size,
+  color?: Color
 }
 
-export function Time({ seconds, paused, size }: Props) {
+export function Time({ seconds, paused, size, color }: Props) {
   const minutes = Math.floor(seconds / 60);
   const secondsInMinute = seconds % 60;
 
@@ -20,6 +21,7 @@ export function Time({ seconds, paused, size }: Props) {
   var classes = []
   if (paused) classes.push("Paused")
   if (size === Size.Large) classes.push("LargeTime")
+  if (color === Color.Green) classes.push("GreenTime")
 
   return (
     <div className={classes.join(" ")}>{minutes}:{displayedSeconds}</div>

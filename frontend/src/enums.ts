@@ -3,3 +3,8 @@ export enum Size {
   Medium,
   Large
 }
+
+export enum Color {
+  Default,
+  Green
+}

@@ -11,3 +11,7 @@
 .LargeTime {
   font-size: 96pt;
 }
+
+.GreenTime {
+  color: rgb(129, 230, 129);
+}
