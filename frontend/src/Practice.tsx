@@ -6,6 +6,9 @@ import { Time } from './Time';
 import { Color, Size } from './enums'
 import { ButtonBar, Button, button } from './ButtonBar';
 import { StudentChooser } from './StudentChooser';
+//import './fanfare.flac';
+import useSound from 'use-sound';
+
 
 enum TimerState {
   Stopped,
@@ -38,6 +41,9 @@ function Practice({ children }: Props) {
   var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
   var [secondsUntilDailyGoal, setSecondsUntilDailyGoal] = useState<number | undefined>(undefined)
   var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
+  var [playedFanfare, setPlayedFanfare] = useState(false)
+
+  const [playFanfare] = useSound('/fanfare.flac', { soundEnabled: !reachedDailyGoal })
 
   function playPauseOrResume() {
     switch (timerState) {
@@ -90,6 +96,10 @@ function Practice({ children }: Props) {
         if (child.goals) {
           const todaySeconds = child.session_stats.seconds_today + newSeconds
           if (todaySeconds >= child.goals.daily_seconds) {
+            if (todaySeconds === child.goals.daily_seconds) {
+              playFanfare()
+              console.log("Reached Daily Goal")
+            }
             setReachedDailyGoal(true)
           } else {
             setSecondsUntilDailyGoal(child.goals.daily_seconds - todaySeconds)
@@ -99,7 +109,7 @@ function Practice({ children }: Props) {
 
       return () => clearInterval(interval)  // Let react clean up the timer
     }
-  }, [timerState, seconds, activeChild, children, activeSession, students])
+  }, [timerState, seconds, activeChild, children, activeSession, students, playFanfare])
 
   const buttons: Button[] = [
     button(getPlayButtonLabel(timerState), playPauseOrResume)
