@@ -6,11 +6,11 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Admin } from './Admin';
 import { StudentForm } from './StudentForm';
-import { Child } from './types';
+import { Student } from './types';
 
 export type StudentUpdates = {
-  addStudent(child: Child): any;
-  updateStudent(child: Child): any;
+  addStudent(child: Student): any;
+  updateStudent(child: Student): any;
   /**
    * Reloads students from the server.
    */
@@ -18,15 +18,15 @@ export type StudentUpdates = {
 }
 
 function App() {
-  const [children, setChildren] = useState<Child[]>([])
+  const [children, setChildren] = useState<Student[]>([])
 
   const studentUpdates: StudentUpdates = {
-    addStudent(child: Child): any {
+    addStudent(child: Student): any {
       const newChildren = [...children]
       newChildren.push(child)
       setChildren(newChildren)
     },
-    updateStudent(child: Child): any {
+    updateStudent(child: Student): any {
 
     },
     async reloadStudents(): Promise<any> {

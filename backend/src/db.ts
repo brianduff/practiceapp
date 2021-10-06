@@ -1,5 +1,5 @@
 import { Db as MongoDb, MongoClient, Collection } from "mongodb"
-import { Child, Session } from './types';
+import { Student, Session } from './types';
 
 const DATABASE = "practice"
 
@@ -23,8 +23,8 @@ export namespace Db {
     return dbClient.db(DATABASE)
   }
 
-  export function students(): Collection<Child> {
-    return db().collection<Child>("student")
+  export function students(): Collection<Student> {
+    return db().collection<Student>("student")
   }
 
   export function sessions(): Collection<Session> {

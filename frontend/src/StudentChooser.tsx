@@ -1,10 +1,10 @@
-import { Child } from './types'
+import { Student } from './types'
 import { Avatar } from './Avatar'
 import { Size } from './enums'
 import './StudentChooser.css'
 
 type Props = {
-  students: Child[],
+  students: Student[],
   selectedIndex?: number,
   onSelected: (index: number) => void
 }

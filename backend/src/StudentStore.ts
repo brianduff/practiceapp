@@ -1,4 +1,4 @@
-import { Child } from './types';
+import { Student } from './types';
 import { Db } from './db';
 import { ObjectId } from 'mongodb';
 
@@ -9,19 +9,19 @@ export interface StudentStore {
   /**
    * Gets all students.
    */
-  getAll(): Promise<Child[]>;
+  getAll(): Promise<Student[]>;
 
   /**
    * Adds a student to the store.
    */
-  add(student: Child): Promise<Child>;
+  add(student: Student): Promise<Student>;
 
-  getKey(student: Child): string;
+  getKey(student: Student): string;
 }
 
 export class ArrayStudentStore implements StudentStore {
 
-  private students: Child[] = [
+  private students: Student[] = [
     {
       name: "Michael",
       picture: "https://storage.googleapis.com/discobubble-quiz/IMG_2071.jpg",
@@ -56,16 +56,16 @@ export class ArrayStudentStore implements StudentStore {
     }
   ]
 
-  getAll(): Promise<Child[]> {
+  getAll(): Promise<Student[]> {
     return Promise.resolve(this.students)
   }
 
-  add(student: Child): Promise<Child> {
+  add(student: Student): Promise<Student> {
     this.students.push(student)
     return Promise.resolve(student)
   }
 
-  getKey(student: Child): string {
+  getKey(student: Student): string {
     for (var i = 0; i < this.students.length; i++) {
       if (this.students[i] === student) {
         return i.toString()
@@ -75,21 +75,21 @@ export class ArrayStudentStore implements StudentStore {
   }
 }
 
-interface MongoStudent extends Child {
+interface MongoStudent extends Student {
   _id: ObjectId
 }
 
 export class MongoStudentStore implements StudentStore {
-  async getAll(): Promise<Child[]> {
+  async getAll(): Promise<Student[]> {
     return await Db.students().find().toArray()
   }
 
-  async add(student: Child): Promise<Child> {
+  async add(student: Student): Promise<Student> {
     await Db.students().insertOne(student)
     return Promise.resolve(student)
   }
 
-  getKey(student: Child): string {
+  getKey(student: Student): string {
     return (student as MongoStudent)._id.toHexString()
   }
 }

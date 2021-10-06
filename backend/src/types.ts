@@ -2,7 +2,7 @@ export type Goals = {
   daily_seconds: number
 }
 
-export interface Child {
+export interface Student {
   picture: string,
   name: string,
   logged_in?: boolean,

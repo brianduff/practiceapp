@@ -1,4 +1,4 @@
-import { Child, Session } from './types';
+import { Student, Session } from './types';
 import { v4 as create_uuid } from 'uuid';
 import { Db } from './db';
 

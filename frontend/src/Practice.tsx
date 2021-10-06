@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Child, Session } from './types';
+import { Student, Session } from './types';
 import "./Practice.css";
 import { Time } from './Time';
 import { Color, Size } from './enums'
@@ -30,7 +30,7 @@ function getPlayButtonLabel(state: TimerState) {
 }
 
 interface Props {
-  children: Child[],
+  children: Student[],
   studentUpdates: StudentUpdates
 }
 

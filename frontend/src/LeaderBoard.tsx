@@ -1,12 +1,12 @@
 import './LeaderBoard.css';
 import { Avatar } from './Avatar';
-import { Child } from './types';
+import { Student } from './types';
 import { Time } from './Time';
 import { button, ButtonBar } from './ButtonBar';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
-  children: Child[]
+  children: Student[]
 }
 
 export default function LeaderBoard({ children }: Props) {

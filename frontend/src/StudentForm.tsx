@@ -3,7 +3,7 @@ import { ButtonBar, button } from './ButtonBar';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
-import { Child } from './types';
+import { Student } from './types';
 import { StudentUpdates } from './App';
 
 interface Props {
@@ -30,7 +30,7 @@ export function StudentForm({ studentUpdates }: Props) {
   const addButtonEnabled = name.length > 0 && pictureUrl.length > 0 && dailyGoal.length > 0;
 
   const addChild = async () => {
-    const child: Child = {
+    const child: Student = {
       name,
       picture: pictureUrl,
       session_stats: {
@@ -43,7 +43,7 @@ export function StudentForm({ studentUpdates }: Props) {
       }
     }
 
-    const response = await axios.post<Child>(`http://localhost:4000/api/children`, child)
+    const response = await axios.post<Student>(`http://localhost:4000/api/children`, child)
     const responseChild = response.data
     studentUpdates.addStudent(responseChild)
     history.push("/")

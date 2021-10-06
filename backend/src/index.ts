@@ -1,5 +1,5 @@
 import cors from 'cors';
-import { Child, Session } from './types';
+import { Student, Session } from './types';
 import express from 'express';
 import { Request, Response } from 'express';
 import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession, updateSession } from './Students';
@@ -50,11 +50,11 @@ app.delete("/api/children/:childId/session/:sessionId", async (req: Request<Sess
   res.json(await endActiveSession(req.params.childId))
 })
 
-app.get("/api/children", async (_: Request, res: Response<Child[], {}>) => {
+app.get("/api/children", async (_: Request, res: Response<Student[], {}>) => {
   res.json(await getAllStudents())
 })
 
-app.post("/api/children", async (req: Request<{}, {}, Child, {}>, res: Response<Child, {}>) => {
+app.post("/api/children", async (req: Request<{}, {}, Student, {}>, res: Response<Student, {}>) => {
   res.json(await addStudent(req.body))
 })
 

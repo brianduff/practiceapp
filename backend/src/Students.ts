@@ -1,4 +1,4 @@
-import { Child, Session } from './types';
+import { Student, Session } from './types';
 import { format } from 'date-fns';
 import { StudentStore, MongoStudentStore } from './StudentStore';
 import { SessionStore, MongoSessionStore } from './SessionStore';
@@ -47,7 +47,7 @@ function getPeriodStats(childId: string): PeriodStats {
   return stats
 }
 
-export async function addStudent(child: Child): Promise<Child> {
+export async function addStudent(child: Student): Promise<Student> {
   return await studentStore.add(child)
 }
 
@@ -55,7 +55,7 @@ export async function addStudent(child: Child): Promise<Child> {
  * Fetches all students from the store, updating their session stats.
  * @returns
  */
-export async function getAllStudents(): Promise<Child[]> {
+export async function getAllStudents(): Promise<Student[]> {
   const students = await studentStore.getAll()
 
   // Roll up the weekly and daily seconds for each child into the returned object.
