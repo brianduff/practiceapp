@@ -1,10 +1,10 @@
 import { Child, Session } from './types';
 import { format } from 'date-fns';
-import { v4 as create_uuid } from 'uuid';
-import { Db } from './db';
-import { StudentStore, ArrayStudentStore } from './StudentStore';
+import { StudentStore, MongoStudentStore } from './StudentStore';
+import { SessionStore, ArraySessionStore } from './SessionStore';
 
-const studentStore = new ArrayStudentStore()
+const studentStore: StudentStore = new MongoStudentStore()
+const sessionStore: SessionStore = new ArraySessionStore()
 
 interface PeriodStats {
   // Map from yyyyMMdd -> number of seconds practiced on that day
@@ -34,21 +34,15 @@ var periodStats: PeriodStats[] = [
   null
 ]
 
-// childId -> currently active session for that child
-var activeSessions: Session[] = [
-  null,
-  null,
-  null
-]
 
-function getPeriodStats(childId: number): PeriodStats {
-  let stats = periodStats[childId]
+function getPeriodStats(childId: string): PeriodStats {
+  let stats = periodStats[parseInt(childId, 10)]
   if (!stats) {
     stats = {
       daily_seconds: new Map(),
       weekly_seconds: new Map()
     }
-    periodStats[childId] = stats
+    periodStats[parseInt(childId, 10)] = stats
   }
   return stats
 }
@@ -66,7 +60,7 @@ export async function getAllStudents(): Promise<Child[]> {
 
   // Roll up the weekly and daily seconds for each child into the returned object.
   for (var i = 0; i < students.length; i++) {
-    const stats = getPeriodStats(i)
+    const stats = getPeriodStats(i.toString())
     const dayKey = getDayKey()
     const weekKey = getWeekKey()
 
@@ -76,7 +70,7 @@ export async function getAllStudents(): Promise<Child[]> {
     students[i].session_stats.seconds_week = secondsWeek
 
     // Include any active session for this student, assuming it started today.
-    const activeSession = activeSessions[i]
+    const activeSession = await sessionStore.getActiveSession(studentStore.getKey(students[i]))
     if (activeSession) {
       if (dayKey === getDayKey(activeSession.start_time)) {
         students[i].session_stats.seconds_today += activeSession.elapsed_seconds
@@ -91,14 +85,15 @@ export async function getAllStudents(): Promise<Child[]> {
   return students
 }
 
-export function getActiveSession(studentId: number): Session | undefined {
-  return activeSessions[studentId]
+export async function getActiveSession(studentId: string): Promise<Session | undefined> {
+  return await sessionStore.getActiveSession(studentId)
 }
 
-export function endActiveSession(studentId: number): Session | undefined {
-  let activeSession = activeSessions[studentId]
+export async function endActiveSession(studentId: string): Promise<Session | undefined> {
+  let activeSession = await sessionStore.getActiveSession(studentId)
   if (activeSession) {
     activeSession.end_time = new Date()
+    sessionStore.updateSession(studentId, activeSession)
     // We record the seconds for this session in the day / week that the session *started*,
     // even if we're ending it later.
     const stats = getPeriodStats(studentId)
@@ -111,23 +106,14 @@ export function endActiveSession(studentId: number): Session | undefined {
     seconds = stats.weekly_seconds.get(weekKey) || 0
     stats.weekly_seconds.set(weekKey, seconds + activeSession.elapsed_seconds)
 
-    activeSessions[studentId] = null
-
     return activeSession
   }
 }
 
-export function startSession(studentId: number): Session {
+export async function startSession(studentId: string): Promise<Session> {
   // Is there a previously active session for this student that never
   // ended? If so, then end it now.
   endActiveSession(studentId)
 
-  const session = {
-    id: create_uuid(),
-    start_time: new Date(),
-    elapsed_seconds: 0
-  }
-  activeSessions[studentId] = session
-
-  return session
+  return await sessionStore.createSession(studentId)
 }

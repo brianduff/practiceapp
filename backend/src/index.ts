@@ -15,14 +15,14 @@ app.use(express.json())
 app.use(cors())
 
 interface PostSessionParams {
-  childId: number
+  childId: string
 }
 // Creates a new session for this child. No body is required, returns
 // the new session.
 // Note that as a side effect of calling this, session_stats for the child
 // may change because of a dangling previous session that was never ended.
-app.post("/api/children/:childId/session", (req: Request<PostSessionParams, {}, Session, {}>, res: Response) => {
-  res.json(startSession(req.params.childId))
+app.post("/api/children/:childId/session", async (req: Request<PostSessionParams, {}, Session, {}>, res: Response) => {
+  res.json(await startSession(req.params.childId))
 })
 
 interface SessionParams extends PostSessionParams {
@@ -30,8 +30,8 @@ interface SessionParams extends PostSessionParams {
 }
 // Updates a session's elapsed seconds. Only works if sessionId represents an active
 // session, and updates to other fields are ignored.
-app.put("/api/children/:childId/session/:sessionId", (req: Request<SessionParams, {}, Session, {}>, res: Response) => {
-  var session = getActiveSession(req.params.childId)
+app.put("/api/children/:childId/session/:sessionId", async (req: Request<SessionParams, {}, Session, {}>, res: Response) => {
+  var session = await getActiveSession(req.params.childId)
   if (!session || session.id !== req.params.sessionId) {
     res.sendStatus(404)
     return
@@ -42,14 +42,14 @@ app.put("/api/children/:childId/session/:sessionId", (req: Request<SessionParams
   res.json(session)
 })
 
-app.delete("/api/children/:childId/session/:sessionId", (req: Request<SessionParams, {}, {}, {}>, res: Response) => {
-  var session = getActiveSession(req.params.childId)
+app.delete("/api/children/:childId/session/:sessionId", async (req: Request<SessionParams, {}, {}, {}>, res: Response) => {
+  var session = await getActiveSession(req.params.childId)
   if (!session || session.id !== req.params.sessionId) {
     res.sendStatus(404)
     return
   }
 
-  res.json(endActiveSession(req.params.childId))
+  res.json(await endActiveSession(req.params.childId))
 })
 
 app.get("/api/children", async (_: Request, res: Response<Child[], {}>) => {

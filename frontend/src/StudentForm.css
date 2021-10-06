@@ -1,0 +1,10 @@
+.StudentForm {
+  display: grid;
+  grid-template-columns: auto 400px;
+  column-gap: 5px;
+  row-gap: 5px;
+}
+
+.StudentForm input[type="text"] {
+  width: 98%;
+}

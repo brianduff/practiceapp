@@ -1,5 +1,6 @@
 import { Child } from './types';
 import { Db } from './db';
+import { ObjectId } from 'mongodb';
 
 /**
  * Store for students.
@@ -14,6 +15,8 @@ export interface StudentStore {
    * Adds a student to the store.
    */
   add(student: Child): Promise<Child>;
+
+  getKey(student: Child): string;
 }
 
 export class ArrayStudentStore implements StudentStore {
@@ -61,6 +64,19 @@ export class ArrayStudentStore implements StudentStore {
     this.students.push(student)
     return Promise.resolve(student)
   }
+
+  getKey(student: Child): string {
+    for (var i = 0; i < this.students.length; i++) {
+      if (this.students[i] === student) {
+        return i.toString()
+      }
+    }
+    return "-1"
+  }
+}
+
+interface MongoStudent extends Child {
+  _id: ObjectId
 }
 
 export class MongoStudentStore implements StudentStore {
@@ -71,5 +87,9 @@ export class MongoStudentStore implements StudentStore {
   async add(student: Child): Promise<Child> {
     await Db.students().insertOne(student)
     return Promise.resolve(student)
+  }
+
+  getKey(student: Child): string {
+    return (student as MongoStudent)._id.toHexString()
   }
 }
