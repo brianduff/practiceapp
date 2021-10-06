@@ -8,7 +8,7 @@ import { ButtonBar, Button, button } from './ButtonBar';
 import { StudentChooser } from './StudentChooser';
 import useSound from 'use-sound';
 import { useHistory } from 'react-router-dom';
-
+import { StudentUpdates } from './App';
 
 enum TimerState {
   Stopped,
@@ -30,10 +30,11 @@ function getPlayButtonLabel(state: TimerState) {
 }
 
 interface Props {
-  children: Child[]
+  children: Child[],
+  studentUpdates: StudentUpdates
 }
 
-function Practice({ children }: Props) {
+function Practice({ children, studentUpdates }: Props) {
   var [students, setStudents] = useState(children)
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TimerState.Stopped)
@@ -69,8 +70,7 @@ function Practice({ children }: Props) {
       const session = activeSession as Session;
       axios.delete(`http://localhost:4000/api/children/${activeChild}/session/${session.id}`)
       setActiveSession(undefined)
-      // Reload the children from the server to get updated session stats data
-      axios("http://localhost:4000/api/children").then(res => setStudents(res.data))
+      studentUpdates.reloadStudents()
     }
 
     setSeconds(0)
