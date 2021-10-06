@@ -1,11 +1,12 @@
 import { Child, Session } from './types';
 import { v4 as create_uuid } from 'uuid';
+import { Db } from './db';
 
 export interface SessionStore {
   /**
    * Gets the most recent active session for the given student.
    */
-  getActiveSession(studentId: string): Promise<Session>;
+  getActiveSession(studentId: string): Promise<Session | undefined>;
 
   /**
    * Updates the properties of a session. This can also be used to end
@@ -61,6 +62,53 @@ export class ArraySessionStore implements SessionStore {
     }
     sessionMap.set(session.id, session)
 
+    return Promise.resolve(session)
+  }
+}
+
+export class MongoSessionStore implements SessionStore {
+  async getActiveSession(studentId: string): Promise<Session | undefined> {
+    const query = {
+      student_id: studentId,
+      end_time: { $exists: false }
+    }
+
+    const sessions = await Db.sessions().find(query).toArray()
+    if (!sessions || sessions.length < 1) {
+      return Promise.resolve(undefined)
+    }
+
+    sessions.sort((a, b) => b.start_time.getTime() - a.start_time.getTime())
+    return Promise.resolve(sessions[0])
+  }
+
+  async updateSession(_: string, session: Session): Promise<Session> {
+    const query = {
+      id: session.id
+    }
+
+    const update = {
+      $set: {
+        elapsed_seconds: session.elapsed_seconds,
+        end_time: session.end_time
+      },
+    }
+
+    // TODO: should disallow setting fields other than end time and elapsed seconds.
+    await Db.sessions().updateOne(query, update)
+
+    return session
+  }
+
+  async createSession(studentId: string): Promise<Session> {
+    const session = {
+      id: create_uuid(),
+      start_time: new Date(),
+      elapsed_seconds: 0,
+      student_id: studentId
+    }
+
+    await Db.sessions().insertOne(session)
     return Promise.resolve(session)
   }
 }

@@ -2,7 +2,7 @@ import cors from 'cors';
 import { Child, Session } from './types';
 import express from 'express';
 import { Request, Response } from 'express';
-import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession } from './Students';
+import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession, updateSession } from './Students';
 import * as sourceMapSupport from 'source-map-support';
 import { Db } from './db';
 
@@ -36,10 +36,8 @@ app.put("/api/children/:childId/session/:sessionId", async (req: Request<Session
     res.sendStatus(404)
     return
   }
-
   session.elapsed_seconds = req.body.elapsed_seconds
-
-  res.json(session)
+  res.json(await updateSession(req.params.childId, session))
 })
 
 app.delete("/api/children/:childId/session/:sessionId", async (req: Request<SessionParams, {}, {}, {}>, res: Response) => {

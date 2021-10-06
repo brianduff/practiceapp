@@ -1,10 +1,10 @@
 import { Child, Session } from './types';
 import { format } from 'date-fns';
 import { StudentStore, MongoStudentStore } from './StudentStore';
-import { SessionStore, ArraySessionStore } from './SessionStore';
+import { SessionStore, MongoSessionStore } from './SessionStore';
 
 const studentStore: StudentStore = new MongoStudentStore()
-const sessionStore: SessionStore = new ArraySessionStore()
+const sessionStore: SessionStore = new MongoSessionStore()
 
 interface PeriodStats {
   // Map from yyyyMMdd -> number of seconds practiced on that day
@@ -83,6 +83,10 @@ export async function getAllStudents(): Promise<Child[]> {
   }
 
   return students
+}
+
+export async function updateSession(studentId: string, session: Session): Promise<Session> {
+  return await sessionStore.updateSession(studentId, session)
 }
 
 export async function getActiveSession(studentId: string): Promise<Session | undefined> {

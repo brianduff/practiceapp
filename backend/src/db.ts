@@ -26,4 +26,8 @@ export namespace Db {
   export function students(): Collection<Child> {
     return db().collection<Child>("student")
   }
+
+  export function sessions(): Collection<Session> {
+    return db().collection<Session>("sessions")
+  }
 }
