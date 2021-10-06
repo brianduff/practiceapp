@@ -38,7 +38,7 @@ function Practice({ children, studentUpdates }: Props) {
   var [students, setStudents] = useState(children)
   var [seconds, setSeconds] = useState(0)
   var [timerState, setTimerState] = useState(TimerState.Stopped)
-  var [activeChild, setActiveChild] = useState(-1)
+  var [activeStudentIndex, setActiveStudentIndex] = useState(-1)
   var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
   var [secondsUntilDailyGoal, setSecondsUntilDailyGoal] = useState<number | undefined>(undefined)
   var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
@@ -47,10 +47,14 @@ function Practice({ children, studentUpdates }: Props) {
 
   const history = useHistory()
 
+  function getActiveStudentId(): string {
+    return students[activeStudentIndex].id as string
+  }
+
   function playPauseOrResume() {
     switch (timerState) {
       case TimerState.Stopped:
-        axios.post<Session>(`http://localhost:4000/api/children/${activeChild}/session`).then(response => {
+        axios.post<Session>(`http://localhost:4000/api/children/${getActiveStudentId()}/session`).then(response => {
           var session = response.data
           setActiveSession(session);
           setTimerState(TimerState.Running);
@@ -68,7 +72,7 @@ function Practice({ children, studentUpdates }: Props) {
   function stop() {
     if (activeSession) {
       const session = activeSession as Session;
-      axios.delete(`http://localhost:4000/api/children/${activeChild}/session/${session.id}`)
+      axios.delete(`http://localhost:4000/api/children/${getActiveStudentId()}/session/${session.id}`)
       setActiveSession(undefined)
       studentUpdates.reloadStudents()
     }
@@ -86,10 +90,10 @@ function Practice({ children, studentUpdates }: Props) {
         // Save the session to the server every 5 seconds.
         if (newSeconds % 5 === 0 && activeSession) {
           activeSession.elapsed_seconds = newSeconds
-          axios.put(`http://localhost:4000/api/children/${activeChild}/session/${activeSession.id}`, activeSession)
+          axios.put(`http://localhost:4000/api/children/${getActiveStudentId()}/session/${activeSession.id}`, activeSession)
         }
 
-        const child = students[activeChild]
+        const child = students[activeStudentIndex]
 
 
         if (child.goals) {
@@ -107,7 +111,7 @@ function Practice({ children, studentUpdates }: Props) {
 
       return () => clearInterval(interval)  // Let react clean up the timer
     }
-  }, [timerState, seconds, activeChild, children, activeSession, students, playFanfare])
+  }, [timerState, seconds, activeStudentIndex, children, activeSession, students, playFanfare, getActiveStudentId])
 
   const buttons: Button[] = [
     button(getPlayButtonLabel(timerState), playPauseOrResume)
@@ -125,9 +129,9 @@ function Practice({ children, studentUpdates }: Props) {
   return (
     <div className="PracticeContainer">
       <StudentChooser students={children}
-        selectedIndex={activeChild === -1 ? undefined : activeChild}
-        onSelected={index => setActiveChild(index)} />
-      {activeChild !== -1 &&
+        selectedIndex={activeStudentIndex === -1 ? undefined : activeStudentIndex}
+        onSelected={index => setActiveStudentIndex(index)} />
+      {activeStudentIndex !== -1 &&
         <>
           <div className="TimeBox">
             <Time size={Size.Large} paused={timerState === TimerState.Paused}

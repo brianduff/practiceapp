@@ -3,6 +3,7 @@ export type Goals = {
 }
 
 export interface Student {
+  id?: string,
   picture: string,
   name: string,
   logged_in?: boolean,

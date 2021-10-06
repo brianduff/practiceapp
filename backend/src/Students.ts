@@ -80,6 +80,8 @@ export async function getAllStudents(): Promise<Student[]> {
         students[i].session_stats.seconds_week += activeSession.elapsed_seconds
       }
     }
+
+    students[i].id = studentStore.getKey(students[i])
   }
 
   return students
