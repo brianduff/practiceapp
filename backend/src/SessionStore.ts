@@ -70,7 +70,7 @@ export class MongoSessionStore implements SessionStore {
   async getActiveSession(studentId: string): Promise<Session | undefined> {
     const query = {
       student_id: studentId,
-      end_time: { $exists: false }
+      end_time: { $eq: null }
     }
 
     const sessions = await Db.sessions().find(query).toArray()
