@@ -1,7 +1,7 @@
 import { Student, Session } from './types';
 import { StudentStore, MongoStudentStore } from './StudentStore';
 import { SessionStore, MongoSessionStore } from './SessionStore';
-import { matchesPeriod, MongoPeriodStatStore, PeriodType } from './PeriodStatStore';
+import { matchesPeriod, MongoPeriodStatStore } from './PeriodStatStore';
 
 const studentStore: StudentStore = new MongoStudentStore()
 const sessionStore: SessionStore = new MongoSessionStore()
@@ -22,8 +22,6 @@ export async function getAllStudents(): Promise<Student[]> {
   for (var i = 0; i < students.length; i++) {
     const studentKey = studentStore.getKey(students[i])
     const [weekStats, dayStats] = await periodStatStore.getPeriodStats(studentKey)
-
-    console.log("Stats:", { student: students[i], dayStats, weekStats })
 
     students[i].session_stats.seconds_today = dayStats?.seconds_practiced
     students[i].session_stats.seconds_week = weekStats?.seconds_practiced

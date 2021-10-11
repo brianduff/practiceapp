@@ -1,4 +1,4 @@
-import { format, getDay } from 'date-fns';
+import { format } from 'date-fns';
 import { Db } from './db';
 
 export enum PeriodType {
