@@ -2,10 +2,11 @@ import { Student, Session } from './types';
 import { StudentStore, MongoStudentStore } from './StudentStore';
 import { SessionStore, MongoSessionStore } from './SessionStore';
 import { matchesPeriod, MongoPeriodStatStore } from './PeriodStatStore';
+import { launchTheRobots } from './robots'
 
-const studentStore: StudentStore = new MongoStudentStore()
+export const studentStore: StudentStore = new MongoStudentStore()
 const sessionStore: SessionStore = new MongoSessionStore()
-const periodStatStore = new MongoPeriodStatStore()
+export const periodStatStore = new MongoPeriodStatStore()
 
 export async function addStudent(child: Student): Promise<Student> {
   return await studentStore.add(child)
@@ -17,6 +18,8 @@ export async function addStudent(child: Student): Promise<Student> {
  */
 export async function getAllStudents(): Promise<Student[]> {
   const students = await studentStore.getAll()
+
+  await launchTheRobots(students)
 
   // Roll up the weekly and daily seconds for each child into the returned object.
   for (var i = 0; i < students.length; i++) {
@@ -52,10 +55,10 @@ export async function getActiveSession(studentId: string): Promise<Session | und
   return await sessionStore.getActiveSession(studentId)
 }
 
-export async function endActiveSession(studentId: string): Promise<Session | undefined> {
+export async function endActiveSession(studentId: string, end_time: Date = new Date()): Promise<Session | undefined> {
   let activeSession = await sessionStore.getActiveSession(studentId)
   if (activeSession) {
-    activeSession.end_time = new Date()
+    activeSession.end_time = end_time
     sessionStore.updateSession(studentId, activeSession)
     // We record the seconds for this session in the day / week that the session *started*,
     // even if we're ending it later.
@@ -65,10 +68,10 @@ export async function endActiveSession(studentId: string): Promise<Session | und
   }
 }
 
-export async function startSession(studentId: string): Promise<Session> {
+export async function startSession(studentId: string, start_time: Date = new Date()): Promise<Session> {
   // Is there a previously active session for this student that never
   // ended? If so, then end it now.
   endActiveSession(studentId)
 
-  return await sessionStore.createSession(studentId)
+  return await sessionStore.createSession(studentId, start_time)
 }

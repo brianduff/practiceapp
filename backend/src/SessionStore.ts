@@ -17,7 +17,7 @@ export interface SessionStore {
   /**
    * Creates a new session for the student.
    */
-  createSession(studentId: string): Promise<Session>;
+  createSession(studentId: string, start_time: Date): Promise<Session>;
 }
 
 export class ArraySessionStore implements SessionStore {
@@ -49,10 +49,10 @@ export class ArraySessionStore implements SessionStore {
     return Promise.resolve(undefined)
   }
 
-  createSession(studentId: string): Promise<Session> {
+  createSession(studentId: string, start_time: Date): Promise<Session> {
     const session = {
       id: create_uuid(),
-      start_time: new Date(),
+      start_time,
       elapsed_seconds: 0
     }
     var sessionMap = this.getSessions(studentId)
