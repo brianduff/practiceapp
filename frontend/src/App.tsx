@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Admin } from './Admin';
 import { StudentForm } from './StudentForm';
 import { Student } from './types';
+import { config } from './config'
 
 export type StudentUpdates = {
   addStudent(child: Student): any;
@@ -30,13 +31,13 @@ function App() {
 
     },
     async reloadStudents(): Promise<any> {
-      let res = await axios("http://localhost:4000/api/children")
+      let res = await axios(`${config.url}/api/children`)
       setChildren(res.data)
     }
   }
 
   useEffect(() => {
-    axios("http://localhost:4000/api/children").then(res => setChildren(res.data))
+    axios(`${config.url}/api/children`).then(res => setChildren(res.data))
   }, [])
 
   return (

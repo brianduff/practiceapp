@@ -9,6 +9,7 @@ import { StudentChooser } from './StudentChooser';
 import useSound from 'use-sound';
 import { useHistory } from 'react-router-dom';
 import { StudentUpdates } from './App';
+import { config } from './config';
 
 enum TimerState {
   Stopped,
@@ -54,7 +55,7 @@ function Practice({ children, studentUpdates }: Props) {
   function playPauseOrResume() {
     switch (timerState) {
       case TimerState.Stopped:
-        axios.post<Session>(`http://localhost:4000/api/children/${getActiveStudentId()}/session`).then(response => {
+        axios.post<Session>(`${config.url}/api/children/${getActiveStudentId()}/session`).then(response => {
           var session = response.data
           setActiveSession(session);
           setTimerState(TimerState.Running);
@@ -72,7 +73,7 @@ function Practice({ children, studentUpdates }: Props) {
   function stop() {
     if (activeSession) {
       const session = activeSession as Session;
-      axios.delete(`http://localhost:4000/api/children/${getActiveStudentId()}/session/${session.id}`)
+      axios.delete(`${config.url}/api/children/${getActiveStudentId()}/session/${session.id}`)
       setActiveSession(undefined)
       studentUpdates.reloadStudents()
     }
@@ -90,7 +91,7 @@ function Practice({ children, studentUpdates }: Props) {
         // Save the session to the server every 5 seconds.
         if (newSeconds % 5 === 0 && activeSession) {
           activeSession.elapsed_seconds = newSeconds
-          axios.put(`http://localhost:4000/api/children/${getActiveStudentId()}/session/${activeSession.id}`, activeSession)
+          axios.put(`${config.url}/api/children/${getActiveStudentId()}/session/${activeSession.id}`, activeSession)
         }
 
         const child = students[activeStudentIndex]

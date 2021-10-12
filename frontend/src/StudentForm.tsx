@@ -6,6 +6,7 @@ import axios from 'axios';
 import { RobotPracticeTime, RobotSettings, Student } from './types';
 import { StudentUpdates } from './App';
 import randomNormal from 'random-normal';
+import { config } from './config';
 
 function randomValue(values: number[]): number {
   return values[Math.floor(Math.random() * values.length)]
@@ -151,7 +152,7 @@ export function StudentForm({ studentUpdates }: Props) {
       robot_controls: robotSettings
     }
 
-    const response = await axios.post<Student>(`http://localhost:4000/api/children`, child)
+    const response = await axios.post<Student>(`${config.url}/api/children`, child)
     const responseChild = response.data
     studentUpdates.addStudent(responseChild)
     history.push("/")
