@@ -6,5 +6,9 @@
     "build": "cd frontend/ && npm install && npm run build && cd ../backend && npm install"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  }
 }
