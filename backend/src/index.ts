@@ -58,6 +58,12 @@ app.post("/api/children", async (req: Request<{}, {}, Student, {}>, res: Respons
   res.json(await addStudent(req.body))
 })
 
+app.use(express.static("../frontend/build"))
+// app.get("*", (req, res) => {
+//   var path = require('path')
+//   res.sendFile(path.resolve(__dirname + "../client/build/index.html"))
+// })
+
 const port = process.env.PORT || 4000
 app.listen(port, () => {
   console.log(`Running at http://localhost:${port}`)
