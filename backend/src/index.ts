@@ -59,9 +59,11 @@ app.post("/api/children", async (req: Request<{}, {}, Student, {}>, res: Respons
 })
 
 app.use(express.static("../frontend/build"))
-app.get("*", (req, res) => {
+
+// Silly workaround for heroku not handling react router properly.
+app.get("*", (_, res) => {
   var path = require('path')
-  res.sendFile(path.resolve(__dirname + "../frontend/build/index.html"))
+  res.sendFile(path.resolve(__dirname + "/../frontend/build/index.html"))
 })
 
 const port = process.env.PORT || 4000
