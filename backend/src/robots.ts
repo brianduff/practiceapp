@@ -6,7 +6,7 @@ import { startSession, updateSession, studentStore, periodStatStore } from './St
 import { CronExpression } from "cron-parser";
 
 // Can increase this to delay robot updates
-const timeBetweenUprisings: Duration = { seconds: 1 }
+const timeBetweenUprisings: Duration = { minutes: 30 }
 
 const ROBOT_STATE_KEY = "asimov"
 
