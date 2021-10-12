@@ -59,10 +59,10 @@ app.post("/api/children", async (req: Request<{}, {}, Student, {}>, res: Respons
 })
 
 app.use(express.static("../frontend/build"))
-// app.get("*", (req, res) => {
-//   var path = require('path')
-//   res.sendFile(path.resolve(__dirname + "../client/build/index.html"))
-// })
+app.get("*", (req, res) => {
+  var path = require('path')
+  res.sendFile(path.resolve(__dirname + "../../client/build/index.html"))
+})
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {
