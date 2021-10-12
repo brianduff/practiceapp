@@ -73,9 +73,13 @@ function Practice({ children, studentUpdates }: Props) {
   function stop() {
     if (activeSession) {
       const session = activeSession as Session;
-      axios.delete(`${config.url}/api/children/${getActiveStudentId()}/session/${session.id}`)
-      setActiveSession(undefined)
-      studentUpdates.reloadStudents()
+      activeSession.elapsed_seconds = seconds
+      axios.put(`${config.url}/api/children/${getActiveStudentId()}/session/${activeSession.id}`, activeSession).then(res => {
+        axios.delete(`${config.url}/api/children/${getActiveStudentId()}/session/${session.id}`).then(res => {
+          setActiveSession(undefined)
+          studentUpdates.reloadStudents()
+        })
+      })
     }
 
     setSeconds(0)
