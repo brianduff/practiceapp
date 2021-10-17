@@ -1,0 +1,12 @@
+.DashBoard {
+  display: grid;
+  width: 100%;
+  grid-template-columns: max-content max-content;
+  column-gap: 10px;
+}
+
+.DashBoard > div {
+  background-color: #ffffff15;
+  padding: 10px;
+  border-radius: 10px;
+}

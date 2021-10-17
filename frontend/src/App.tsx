@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import LeaderBoard from "./LeaderBoard";
+import LeaderBoardPage from "./LeaderBoard";
 import Practice from './Practice';
 import axios from 'axios';
 import './App.css';
@@ -8,6 +8,7 @@ import { Admin } from './Admin';
 import { StudentForm } from './StudentForm';
 import { Student } from './types';
 import { config } from './config'
+import { DashBoard } from "./DashBoard";
 
 export type StudentUpdates = {
   addStudent(child: Student): any;
@@ -45,10 +46,10 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <LeaderBoard children={children} />
+            <LeaderBoardPage children={children} />
           </Route>
           <Route exact path="/dashboard">
-            <LeaderBoard children={children} dashboard={true} />
+            <DashBoard children={children} />
           </Route>
           <Route path="/practice">
             <Practice children={children} studentUpdates={studentUpdates} />

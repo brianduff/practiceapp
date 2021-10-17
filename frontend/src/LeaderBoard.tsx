@@ -7,12 +7,9 @@ import { useHistory } from 'react-router-dom';
 
 interface Props {
   children: Student[],
-  dashboard?: boolean
 }
 
-export default function LeaderBoard({ children, dashboard=false }: Props) {
-  const history = useHistory()
-
+export function LeaderBoard({ children }: Props) {
   var childElements = []
   var pos = 1
   var sortedChildren = [...children]
@@ -25,21 +22,24 @@ export default function LeaderBoard({ children, dashboard=false }: Props) {
     pos++
   }
 
+  return (
+    <div className="LeaderBoard">
+      {childElements}
+    </div>
+  );
+}
+
+
+export default function LeaderBoardPage({ children }: Props) {
+  const history = useHistory()
+
   const showPractice = () => history.push("/practice")
 
-  var className = "LeaderBoard"
-  if (dashboard) {
-    className += " LeaderBoardDashBoard"
-  }
   return (
     <div>
       <h1>Piano Practice Leaderboard</h1>
-      <div className={className}>
-        {childElements}
-      </div>
-      {!dashboard &&
-        <ButtonBar buttons={[button("Start Practice", showPractice)]} />
-      }
+      <LeaderBoard children={children} />
+      <ButtonBar buttons={[button("Start Practice", showPractice)]} />
     </div>
   );
 }

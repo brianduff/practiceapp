@@ -1,6 +1,6 @@
 .LeaderBoard {
   display: grid;
-  grid-template-columns: max-content max-content fit-content(100px) 50px;
+  grid-template-columns: max-content max-content fit-content(100px) max-content;
   align-items: center;
   column-gap: 10px;
   row-gap: 5px;
