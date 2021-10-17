@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Student, Session } from './types';
 import "./Practice.css";
 import { Time } from './Time';
@@ -10,6 +10,8 @@ import useSound from 'use-sound';
 import { useHistory } from 'react-router-dom';
 import { StudentUpdates } from './App';
 import { config } from './config';
+import { Listener } from './Listener';
+import { speak } from './Speech';
 
 enum TimerState {
   Stopped,
@@ -35,6 +37,13 @@ interface Props {
   studentUpdates: StudentUpdates
 }
 
+enum QuietState {
+  Normal,
+  FirstWarning,
+  SecondWarning,
+  Paused
+}
+
 function Practice({ children, studentUpdates }: Props) {
   var [students, setStudents] = useState(children)
   var [seconds, setSeconds] = useState(0)
@@ -43,6 +52,8 @@ function Practice({ children, studentUpdates }: Props) {
   var [reachedDailyGoal, setReachedDailyGoal] = useState(false)
   var [secondsUntilDailyGoal, setSecondsUntilDailyGoal] = useState<number | undefined>(undefined)
   var [activeSession, setActiveSession] = useState<Session | undefined>(undefined)
+  var quietPeriods = useRef(0)
+  var [quietState, setQuietState] = useState(QuietState.Normal)
 
   const [playFanfare] = useSound('/fanfare.flac', { soundEnabled: !reachedDailyGoal })
 
@@ -58,10 +69,13 @@ function Practice({ children, studentUpdates }: Props) {
         axios.post<Session>(`${config.url}/api/children/${getActiveStudentId()}/session`).then(response => {
           var session = response.data
           setActiveSession(session);
+          console.log("Resetting quiet periods")
+          quietPeriods.current = 0
           setTimerState(TimerState.Running);
         })
         break;
       case TimerState.Paused:
+        quietPeriods.current = 0
         setTimerState(TimerState.Running);
         break;
       case TimerState.Running:
@@ -131,6 +145,19 @@ function Practice({ children, studentUpdates }: Props) {
     secondsUntilGoalElement = <div className="TimeToTarget"><Time seconds={secondsUntilDailyGoal} /> until target</div>
   }
 
+  const onNoisyPeriod = () => {
+    console.log("Noisy period!")
+    quietPeriods.current = 0
+  }
+
+  const onQuietPeriod = () => {
+    quietPeriods.current = quietPeriods.current + 1
+    if (quietPeriods.current > 2 && timerState === TimerState.Running) {
+      speak("I'm not hearing any sound, so I paused the practice. Press rezume to continue")
+      playPauseOrResume()
+    }
+  }
+
   return (
     <div className="PracticeContainer">
       <StudentChooser students={children}
@@ -138,6 +165,22 @@ function Practice({ children, studentUpdates }: Props) {
         onSelected={index => setActiveStudentIndex(index)} />
       {activeStudentIndex !== -1 &&
         <>
+          <Listener listening={timerState === TimerState.Running}
+            onNoisyPeriod={onNoisyPeriod}
+            onQuietPeriod={onQuietPeriod}/>
+
+          {quietPeriods.current === 1 &&
+            <div>Hey! it's kind of quiet..... are you still practicing?</div>
+          }
+
+          {quietPeriods.current === 2 &&
+            <div>Oy! It's been quiet for a while. Pausing soon!</div>
+          }
+
+          {quietPeriods.current > 2 &&
+            <div>Paused automatically because it was so quiet</div>
+          }
+
           <div className="TimeBox">
             <Time size={Size.Large} paused={timerState === TimerState.Paused}
               seconds={seconds} color={reachedDailyGoal ? Color.Green : Color.Default} />
