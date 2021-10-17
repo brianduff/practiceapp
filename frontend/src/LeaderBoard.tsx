@@ -6,10 +6,11 @@ import { button, ButtonBar } from './ButtonBar';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
-  children: Student[]
+  children: Student[],
+  dashboard?: boolean
 }
 
-export default function LeaderBoard({ children }: Props) {
+export default function LeaderBoard({ children, dashboard=false }: Props) {
   const history = useHistory()
 
   var childElements = []
@@ -26,13 +27,19 @@ export default function LeaderBoard({ children }: Props) {
 
   const showPractice = () => history.push("/practice")
 
+  var className = "LeaderBoard"
+  if (dashboard) {
+    className += " LeaderBoardDashBoard"
+  }
   return (
     <div>
-      <h1>Practice Leaderboard</h1>
-      <div className="LeaderBoard">
+      <h1>Piano Practice Leaderboard</h1>
+      <div className={className}>
         {childElements}
       </div>
-      <ButtonBar buttons={[button("Start Practice", showPractice)]} />
+      {!dashboard &&
+        <ButtonBar buttons={[button("Start Practice", showPractice)]} />
+      }
     </div>
   );
 }

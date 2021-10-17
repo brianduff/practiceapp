@@ -47,6 +47,9 @@ function App() {
           <Route exact path="/">
             <LeaderBoard children={children} />
           </Route>
+          <Route exact path="/dashboard">
+            <LeaderBoard children={children} dashboard={true} />
+          </Route>
           <Route path="/practice">
             <Practice children={children} studentUpdates={studentUpdates} />
           </Route>
