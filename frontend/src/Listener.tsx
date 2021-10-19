@@ -8,7 +8,7 @@ const AVG_DURATION: Duration = {
 }
 
 // Below this is considered quiet.
-const THRESHOLD_FOR_QUIET = 20
+const THRESHOLD_FOR_QUIET = 10
 
 
 // We sample at about 30hz for the animation, so 200 should be more than enough.
@@ -45,7 +45,7 @@ class RunningAverage {
       this.current_values.clear()
 
       if (this.period_callback) {
-       this.period_callback(mean)
+        this.period_callback(mean)
       }
 
       this.period_start = now
@@ -62,11 +62,11 @@ export interface Props {
   onNoisyPeriod: () => void
 }
 
-export function Listener({ listening, onQuietPeriod, onNoisyPeriod } : Props) {
+export function Listener({ listening, onQuietPeriod, onNoisyPeriod }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const analyzerRef = useRef<AnalyserNode | null>(null)
 
-  const animation = useRef<number|null>(null);
+  const animation = useRef<number | null>(null);
 
 
   useEffect(() => {
@@ -112,13 +112,13 @@ export function Listener({ listening, onQuietPeriod, onNoisyPeriod } : Props) {
 
             var barWidth = (width / analyzer.frequencyBinCount) * 2.5
             var barHeight;
-            var x= 0
+            var x = 0
 
             for (var i = 0; i < analyzer.frequencyBinCount; i++) {
               barHeight = volumes[i]
 
               context.fillStyle = `rgb(50, 50, ${barHeight + 100})`
-              context.fillRect(x, height-barHeight/2, barWidth, barHeight/2)
+              context.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2)
 
               x += barWidth + 1
             }
@@ -160,7 +160,7 @@ export function Listener({ listening, onQuietPeriod, onNoisyPeriod } : Props) {
       stopListening()
     }
 
-  }, [ listening ])
+  }, [listening])
 
   return (
     <div>
