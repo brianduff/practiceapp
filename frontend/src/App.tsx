@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import LeaderBoardPage from "./LeaderBoard";
 import Practice from './Practice';
+import { Calibrate } from './Calibrate'
 import axios from 'axios';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route path="/admin/addstudent">
             <StudentForm studentUpdates={studentUpdates} />
+          </Route>
+          <Route path="/calibrate">
+            <Calibrate students={children} />
           </Route>
         </Switch>
       </Router>

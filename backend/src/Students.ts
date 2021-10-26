@@ -12,6 +12,10 @@ export async function addStudent(child: Student): Promise<Student> {
   return await studentStore.add(child)
 }
 
+export async function updateStudent(student: Student): Promise<Student> {
+  return await studentStore.update(student)
+}
+
 /**
  * Fetches all students from the store, updating their session stats.
  * @returns

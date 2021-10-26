@@ -3,9 +3,6 @@ import './Listener.css'
 import { Duration, add as add_date } from 'date-fns'
 import { CircularBuffer } from './CircularBuffer'
 
-const AVG_DURATION: Duration = {
-  seconds: 5
-}
 
 // Below this is considered quiet.
 const THRESHOLD_FOR_QUIET = 10
@@ -23,13 +20,20 @@ class RunningAverage {
   current_values: CircularBuffer = new CircularBuffer(MAX_SAMPLES_PER_DURATION)
 
   period_start: Date = new Date()
-  period_end: Date = add_date(this.period_start, AVG_DURATION)
+  period_end: Date
   dropped_samples = 0
+  sample_duration
 
   period_callback: undefined | ((lastAverage: number) => void) = undefined
 
-  constructor(period_callback?: ((lastAverage: number) => void)) {
+  constructor(sample_duration: Duration, period_callback?: ((lastAverage: number) => void),) {
     this.period_callback = period_callback
+    this.sample_duration = sample_duration
+    this.period_end = this.createEndDate(this.period_start)
+  }
+
+  createEndDate(startDate: Date): Date {
+    return add_date(startDate, this.sample_duration)
   }
 
   record(value: number) {
@@ -49,7 +53,7 @@ class RunningAverage {
       }
 
       this.period_start = now
-      this.period_end = add_date(now, AVG_DURATION)
+      this.period_end = this.createEndDate(now)
     }
   }
 }
@@ -57,16 +61,23 @@ class RunningAverage {
 export interface Props {
   listening: boolean,
   // A function that's triggered when things go quiet for > 5s
-  onQuietPeriod: () => void,
+  onQuietPeriod?: () => void,
   // A function that's triggered when things are noisy for > 5s
-  onNoisyPeriod: () => void
+  onNoisyPeriod?: () => void,
+
+  onAverageVolume?: (volume: number) => void,
+
+  averageTimeSecs?: number,
+
+  debugMode?: boolean
 }
 
-export function Listener({ listening, onQuietPeriod, onNoisyPeriod }: Props) {
+export function Listener({ listening, onQuietPeriod, onNoisyPeriod, debugMode = false, onAverageVolume, averageTimeSecs = 5 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const analyzerRef = useRef<AnalyserNode | null>(null)
 
   const animation = useRef<number | null>(null);
+  const lastAverageSaved = useRef<number | null>(null);
 
 
   useEffect(() => {
@@ -93,12 +104,20 @@ export function Listener({ listening, onQuietPeriod, onNoisyPeriod }: Props) {
       const height = canvas?.height as number
       const context = canvas?.getContext("2d")
 
-      const averages = new RunningAverage((lastAverage) => {
+      const duration: Duration = {
+        seconds: averageTimeSecs
+      }
+
+      const averages = new RunningAverage(duration, (lastAverage) => {
+        lastAverageSaved.current = lastAverage;
+        if (onAverageVolume) {
+          onAverageVolume(lastAverage)
+        }
         console.log("last average", lastAverage)
         if (lastAverage < THRESHOLD_FOR_QUIET) {
-          onQuietPeriod()
+          if (onQuietPeriod) onQuietPeriod()
         } else {
-          onNoisyPeriod()
+          if (onNoisyPeriod) onNoisyPeriod()
         }
       })
 
@@ -121,6 +140,12 @@ export function Listener({ listening, onQuietPeriod, onNoisyPeriod }: Props) {
               context.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2)
 
               x += barWidth + 1
+            }
+
+            if (debugMode) {
+              context.fillStyle = `rgb(255, 255, 255)`
+              context.font = '12px serif'
+              context.fillText("Debug mode! " + lastAverageSaved.current, 0, 15)
             }
 
             // We only sample the middle third of frequencies, because those are
@@ -160,11 +185,11 @@ export function Listener({ listening, onQuietPeriod, onNoisyPeriod }: Props) {
       stopListening()
     }
 
-  }, [listening])
+  }, [listening, debugMode])
 
   return (
     <div>
-      <canvas className="AudioBar" ref={canvasRef}></canvas>
+      <canvas width="340" height="100" className="AudioBar" ref={canvasRef}></canvas>
       <div className="AudioMessage">&nbsp;</div>
     </div>
   )

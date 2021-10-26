@@ -33,7 +33,8 @@ export interface Student {
   logged_in?: boolean,
   goals?: Goals,
   session_stats: SessionStats,
-  robot_controls?: RobotSettings
+  robot_controls?: RobotSettings,
+  calibration?: Calibration
 }
 
 export type Session = {
@@ -46,4 +47,8 @@ export type Session = {
 export type SessionStats = {
   seconds_today: number,
   seconds_week: number
+}
+
+export type Calibration = {
+  noisy_threshold: number
 }

@@ -167,7 +167,8 @@ function Practice({ children, studentUpdates }: Props) {
         <>
           <Listener listening={timerState === TimerState.Running}
             onNoisyPeriod={onNoisyPeriod}
-            onQuietPeriod={onQuietPeriod}/>
+            onQuietPeriod={onQuietPeriod}
+            averageTimeSecs={10} />
 
           {quietPeriods.current === 1 &&
             <div>Hey! it's kind of quiet..... are you still practicing?</div>

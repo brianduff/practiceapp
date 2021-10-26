@@ -1,6 +1,7 @@
 import { Student } from './types';
 import { Db } from './db';
 import { ObjectId } from 'mongodb';
+import { de } from 'date-fns/locale';
 
 /**
  * Store for students.
@@ -15,6 +16,8 @@ export interface StudentStore {
    * Adds a student to the store.
    */
   add(student: Student): Promise<Student>;
+
+  update(student: Student): Promise<Student>;
 
   getKey(student: Student): string;
 }
@@ -65,6 +68,11 @@ export class ArrayStudentStore implements StudentStore {
     return Promise.resolve(student)
   }
 
+  update(student: Student): Promise<Student> {
+    // TODO
+    return Promise.resolve(student)
+  }
+
   getKey(student: Student): string {
     for (var i = 0; i < this.students.length; i++) {
       if (this.students[i] === student) {
@@ -86,7 +94,22 @@ export class MongoStudentStore implements StudentStore {
 
   async add(student: Student): Promise<Student> {
     await Db.students().insertOne(student)
-    return Promise.resolve(student)
+    return student
+  }
+
+  async update(student: Student): Promise<Student> {
+    console.log("Update student", student);
+
+    delete (student as MongoStudent)._id
+
+    const result = await Db.students().replaceOne({
+      _id: new ObjectId(student.id)
+    }, student)
+
+
+    console.log("Result", result)
+
+    return student
   }
 
   getKey(student: Student): string {

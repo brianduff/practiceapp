@@ -2,7 +2,7 @@ import cors from 'cors';
 import { Student, Session } from './types';
 import express from 'express';
 import { Request, Response } from 'express';
-import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession, updateSession } from './Students';
+import { addStudent, getAllStudents, startSession, getActiveSession, endActiveSession, updateSession, updateStudent } from './Students';
 import * as sourceMapSupport from 'source-map-support';
 import { Db } from './db';
 
@@ -56,6 +56,10 @@ app.get("/api/children", async (_: Request, res: Response<Student[], {}>) => {
 
 app.post("/api/children", async (req: Request<{}, {}, Student, {}>, res: Response<Student, {}>) => {
   res.json(await addStudent(req.body))
+})
+
+app.put("/api/children/:childId", async (req: Request<{}, {}, Student, {}>, res: Response<Student, {}>) => {
+  res.json(await updateStudent(req.body))
 })
 
 app.use(express.static("../frontend/build"))
